@@ -10,7 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
 
-public class Correct_un_pw {
+public class TestCase2 {
     private WebDriver driver;
 
     @Before
@@ -20,13 +20,13 @@ public class Correct_un_pw {
     }
 
     @Test
-    public void check() {
+    public void incorrectUnPw() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\parky\\Documents\\GitHub\\Making_Infrastructure\\scenario-login\\chromedriver.exe");
         driver.get("http://localhost/litecart/admin/login.php?redirect_url=%2Flitecart%2Fadmin%2F");
         WebElement username = driver.findElement(By.name("username"));
-        username.sendKeys("admin");
+        username.sendKeys("joker");
         WebElement password = driver.findElement(By.name("password"));
-        password.sendKeys("admin");
+        password.sendKeys("joker");
         driver.findElement(By.name("login")).click();
     }
 
