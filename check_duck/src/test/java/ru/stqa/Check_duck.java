@@ -35,21 +35,26 @@ public class Check_duck {
     public void adminSectionsTest() {
         driver.navigate().to("http://localhost/litecart/en/");
 
-        String locator = "div#box-most-popular li.product.column.shadow.hover-light";
-        int numDuck = driver.findElements(By.cssSelector(locator)).size();
+        String[] statType = {"box-most-popular", "box-campaigns", "box-latest-products"};
 
-        for (int i = 0; i < numDuck; i++) {
-            List<WebElement> elementsDuck = driver.findElements(By.cssSelector(locator));
-            WebElement elementDuck = elementsDuck.get(i);
-            int countDuck = elementDuck.findElements(By.xpath(".//div[@title]")).size();
-            String stickerName = elementDuck.findElement(By.cssSelector("div.name")).getText();
-            if (countDuck == 1) {
-                String stat = elementDuck.findElement(By.cssSelector("div.sticker")).getText();
-                System.out.println("The item " + stickerName + " has one " + stat.toUpperCase() + " sticker");
-            } else if (countDuck > 1) {
-                System.out.println("The item " + stickerName + " has more than one sticker");
-            } else {
-                System.out.println("The item " + stickerName + " has no sticker");
+        for (String type : statType) {
+            System.out.println("*** " + type + " ***");
+            String locator = "div#" + type + " li.product.column.shadow.hover-light";
+            int numDuck = driver.findElements(By.cssSelector(locator)).size();
+
+            for (int i = 0; i < numDuck; i++) {
+                List<WebElement> elementsDuck = driver.findElements(By.cssSelector(locator));
+                WebElement elementDuck = elementsDuck.get(i);
+                int countDuck = elementDuck.findElements(By.cssSelector("div.sticker")).size();
+                String stickerName = elementDuck.findElement(By.cssSelector("div.name")).getText();
+                if (countDuck == 1) {
+                    String stat = elementDuck.findElement(By.cssSelector("div.sticker")).getText();
+                    System.out.println("The item " + stickerName + " has one " + stat.toUpperCase() + " sticker");
+                } else if (countDuck > 1) {
+                    System.out.println("The item " + stickerName + " has more than one sticker");
+                } else {
+                    System.out.println("The item " + stickerName + " has no sticker");
+                }
             }
         }
     }
