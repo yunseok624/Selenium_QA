@@ -43,9 +43,9 @@ public class Check_duck {
             int numDuck = driver.findElements(By.cssSelector(locator)).size();
 
             for (int i = 0; i < numDuck; i++) {
-                List<WebElement> elementsDuck = driver.findElements(By.cssSelector(locator));
+                List<WebElement> elementsDuck = driver.findElements(By.cssSelector("li.product"));
                 WebElement elementDuck = elementsDuck.get(i);
-                int countDuck = elementDuck.findElements(By.cssSelector(".image-wrapper")).size();
+                int countDuck = elementDuck.findElements(By.cssSelector(".sticker")).size();
                 String stickerName = elementDuck.findElement(By.cssSelector("div.name")).getText();
                 if (countDuck == 1) {
                     String stat = elementDuck.findElement(By.cssSelector("div.sticker")).getText();
