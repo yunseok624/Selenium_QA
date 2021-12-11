@@ -38,15 +38,5 @@ public class TestBase {
         driver.quit();
         driver = null;
     }
-
-    private boolean isElementPresent(By locator) {
-        try {
-            driver.findElement(locator);
-            return true;
-        }
-        catch (NoSuchElementException ex){
-            return false;
-        }
-    }
 }
 
