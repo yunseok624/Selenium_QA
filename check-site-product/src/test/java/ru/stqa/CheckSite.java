@@ -7,28 +7,20 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.support.Color;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.Objects;
 
-public class IE {
-    public static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
-    public WebDriver driver;
+public class CheckSite {
+    private WebDriver driver;
     public WebDriverWait wait;
 
     @Before
-    public void start() {
-        if (tlDriver.get() != null) {
-            driver = tlDriver.get();
-            wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            return;
-        }
-
-        driver = new InternetExplorerDriver();
-        tlDriver.set(driver);
+    public void start(){
+        driver = new ChromeDriver();
+        //driver = new FirefoxDriver();
+        //driver = new InternetExplorerDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(1));
     }
 
@@ -45,7 +37,7 @@ public class IE {
     }
 
     @Test
-    public void compareProductPrice() throws Exception {
+    public void compareProductPrice() throws Exception{
         driver.get("http://localhost/litecart");
         WebElement product = driver.findElement(By.cssSelector("#box-campaigns li.product"));
         String RegPriceMP = product.findElement(By.cssSelector(".regular-price")).getText();
@@ -62,61 +54,75 @@ public class IE {
     }
 
     @Test
-    public void RegularProductStyle() throws Exception {
+    public void RegularProductStyle() throws Exception{
         driver.get("http://localhost/litecart");
         WebElement ProductPriceMP = driver.findElement(By.cssSelector("#box-campaigns li.product .regular-price"));
         String RegPriceColorMP = ProductPriceMP.getCssValue("color");
-        String hexColorMP = Color.fromString(RegPriceColorMP).asHex();
-        if (!Objects.equals(hexColorMP, "#777777")) {
-            throw new Exception("Color of regular price in the main page is not gray");
+        String RegPriceColorMPPreCut = RegPriceColorMP.substring(RegPriceColorMP.indexOf("(")+1);
+        String RegPriceColorMPCut = RegPriceColorMPPreCut.substring(0,RegPriceColorMPPreCut.length()-1);
+        String[] RPC1 = RegPriceColorMPCut.split(", ");
+        int c1 = Integer.parseInt(RPC1[0]);
+        for(int i = 1; i < 3; i++){
+            if (Integer.parseInt(RPC1[i]) != c1){
+                throw new Exception("Color of regular price in the main page is not gray");
+            }
         }
-        String RegPriceLineMP = ProductPriceMP.getCssValue("text-decoration-line");
-        if (!Objects.equals(RegPriceLineMP, "line-through")){
+        String RegPriceLineMP = ProductPriceMP.getCssValue("text-decoration");
+        if (!RegPriceLineMP.contains("line-through")){
             throw new Exception("Regular price in the main page is not crossed");
         }
 
         ProductPriceMP.click();
         WebElement ProductPricePP = driver.findElement(By.cssSelector("#box-product .regular-price"));
         String RegPriceColorPP = ProductPricePP.getCssValue("color");
-        String hexColorPP = Color.fromString(RegPriceColorPP).asHex();
-        if (!Objects.equals(hexColorPP, "#666666")) {
-            throw new Exception("Color of regular price in the product page is not gray");
+        String RegPriceColorPPPreCut = RegPriceColorPP.substring(RegPriceColorPP.indexOf("(")+1);
+        String RegPriceColorPPCut = RegPriceColorPPPreCut.substring(0,RegPriceColorPPPreCut.length()-1);
+        String[] RPC2 = RegPriceColorPPCut.split(", ");
+        int c2 = Integer.parseInt(RPC2[0]);
+        for(int i = 1; i < 3; i++){
+            if (Integer.parseInt(RPC2[i]) != c2){
+                throw new Exception("Color of regular price in the main page is not gray");
+            }
         }
-        String RegPriceLine = ProductPricePP.getCssValue("text-decoration-line");
-        if (!Objects.equals(RegPriceLine, "line-through")){
+        String RegPriceLinePP = ProductPricePP.getCssValue("text-decoration");
+        if (!RegPriceLinePP.contains("line-through")){
             throw new Exception("Regular price in the product page is not crossed");
         }
     }
 
     @Test
-    public void CampaignProductStyle() throws Exception {
+    public void CampaignProductStyle() throws Exception{
         driver.get("http://localhost/litecart");
         WebElement ProductPriceMP = driver.findElement(By.cssSelector("#box-campaigns li.product .campaign-price"));
         String CamPriceColorMP = ProductPriceMP.getCssValue("color");
-        String hexColor = Color.fromString(CamPriceColorMP).asHex();
-        if (!Objects.equals(hexColor, "#cc0000")) {
-            throw new Exception("Color of regular price in the main page is not red");
+        String CamPriceColorMPPreCut = CamPriceColorMP.substring(CamPriceColorMP.indexOf("(")+1);
+        String CamPriceColorMPCut = CamPriceColorMPPreCut.substring(0,CamPriceColorMPPreCut.length()-1);
+        String[] CPC1 = CamPriceColorMPCut.split(", ");
+        if (Integer.parseInt(CPC1[1]) != 0 || Integer.parseInt(CPC1[2]) != 0 ){
+            throw new Exception("Color of regular price in the main page is not gray");
         }
-        String CamPriceLine = ProductPriceMP.getCssValue("font-weight");
-        if (!Objects.equals(CamPriceLine, "700")){
+        String CamPriceLineMP = ProductPriceMP.getCssValue("font-weight");
+        if (Integer.parseInt(CamPriceLineMP) < 700){
             throw new Exception("Campaign price in the main page is not in bold");
         }
 
         ProductPriceMP.click();
         WebElement ProductPricePP = driver.findElement(By.cssSelector("#box-product .campaign-price"));
-        String RegPriceColorPP = ProductPricePP.getCssValue("color");
-        String hexColorPP = Color.fromString(RegPriceColorPP).asHex();
-        if (!Objects.equals(hexColorPP, "#cc0000")) {
-            throw new Exception("Color of campaign price in the product page is not gray");
+        String CamPriceColorPP = ProductPricePP.getCssValue("color");
+        String CamPriceColorPPPreCut = CamPriceColorPP.substring(CamPriceColorPP.indexOf("(")+1);
+        String CamPriceColorPPCut = CamPriceColorPPPreCut.substring(0,CamPriceColorPPPreCut.length()-1);
+        String[] CPC2 = CamPriceColorPPCut.split(", ");
+        if (Integer.parseInt(CPC2[1]) != 0 || Integer.parseInt(CPC2[2]) != 0 ){
+            throw new Exception("Color of regular price in the main page is not gray");
         }
-        String RegPriceLine = ProductPricePP.getCssValue("font-weight");
-        if (!Objects.equals(RegPriceLine, "700")){
+        String CamPriceLinePP = ProductPricePP.getCssValue("font-weight");
+        if (Integer.parseInt(CamPriceLinePP) < 700){
             throw new Exception("Campaign price in the product page is not crossed");
         }
     }
 
     @Test
-    public void priceSizeComparison() throws Exception {
+    public void priceSizeComparison() throws Exception{
         driver.get("http://localhost/litecart");
         WebElement RegPriceMP = driver.findElement(By.cssSelector("#box-campaigns li.product .regular-price"));
         WebElement CamPriceMP = driver.findElement(By.cssSelector("#box-campaigns li.product .campaign-price"));
