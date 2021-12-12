@@ -3,10 +3,12 @@ package ru.stqa;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+
 
 public class SortZones extends TestBase{
     @Test
@@ -23,13 +25,17 @@ public class SortZones extends TestBase{
             wait.until(titleIs("Edit Geo Zone | My Store"));
 
             List<WebElement> numZones = driver.findElements(By.xpath(("//*[@id=\"table-zones\"]//tr")));
+            String previousZoneName = "";
             for(int j = 1; j < numZones.size() - 2 ; j++) {
-                String currentZoneName = numZones.get(j).findElements(By.tagName("td")).get(2).getText();
-                String nextZoneName  = numZones.get(j + 1).findElements(By.tagName("td")).get(2).getText();
-                if (currentZoneName.compareTo(nextZoneName) > 0) {
+                Select se = new Select(numZones.get(j).findElements(By.tagName("td")).get(2).
+                        findElement(By.tagName("select")));
+                WebElement o = se.getFirstSelectedOption();
+                String currentZoneName = o.getText();
+                if (currentZoneName.compareTo(previousZoneName) < 0) {
                     System.out.println("The list is not in alphabetic order");
                     break;
                 }
+                previousZoneName = currentZoneName;
             }
             driver.navigate().back();
             numCountries = driver.findElements(By.cssSelector("tr.row"));
