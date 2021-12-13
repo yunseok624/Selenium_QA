@@ -21,14 +21,15 @@ public class SortCountries extends TestBase{
         List<WebElement> numCountries = driver.findElements(By.cssSelector("tr.row"));
         String previousCountryName = "";
         for (int i = 0; i < numCountries.size(); i++) {
-            String currentCountryName = numCountries.get(i).findElements(By.tagName("td")).get(4).getText();
+            List<WebElement> list = numCountries.get(i).findElements(By.tagName("td"));
+            String currentCountryName = list.get(4).getText();
             if (currentCountryName.compareTo(previousCountryName) < 0) {
                 System.out.println("The list is not in alphabetic order");
                 break;
             }
             previousCountryName = currentCountryName;
 
-            int numZ = Integer.parseInt(numCountries.get(i).findElements(By.tagName("td")).get(5).getText());
+            int numZ = Integer.parseInt(list.get(5).getText());
             if (numZ >= 1) {
                 numCountries.get(i).findElement(By.cssSelector("td a:not([title])")).click();
                 wait.until(titleIs("Edit Country | My Store"));
