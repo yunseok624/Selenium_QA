@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class CheckSite {
+public class checkSite {
     private WebDriver driver;
     public WebDriverWait wait;
 
