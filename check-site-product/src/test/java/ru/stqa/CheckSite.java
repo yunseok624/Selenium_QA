@@ -130,8 +130,9 @@ public class CheckSite {
         String CamPriceFontMP = CamPriceMP.getCssValue("font-size");
         String RegPriceFontMPCut = RegPriceFontMP.substring(0,RegPriceFontMP.length()-2);
         String CamPriceFontMPCut = CamPriceFontMP.substring(0, CamPriceFontMP.length()-2);
-        if (RegPriceFontMPCut.compareTo(String.valueOf(Double.parseDouble(CamPriceFontMPCut))) > 0) {
-            throw new Exception("Size of prices differ or are the same in the main page");
+        if (Double.parseDouble(RegPriceFontMPCut) >= (Double.parseDouble(CamPriceFontMPCut))) {
+            throw new Exception("In the main page size of the regular price is bigger than or same with the " +
+                    "campaign price");
         }
 
         RegPriceMP.click();
@@ -141,8 +142,9 @@ public class CheckSite {
         String CamPriceFontPP = CamPricePP.getCssValue("font-size");
         String RegPriceFontPPCut = RegPriceFontPP.substring(0,RegPriceFontPP.length()-2);
         String CamPriceFontPPCut = CamPriceFontPP.substring(0, CamPriceFontPP.length()-2);
-        if (RegPriceFontPPCut.compareTo(String.valueOf(Double.parseDouble(CamPriceFontPPCut))) > 0) {
-            throw new Exception("Size of prices differ or are the same in the product page");
+        if (Double.parseDouble(RegPriceFontPPCut) >= (Double.parseDouble(CamPriceFontPPCut))) {
+            throw new Exception("In the product page size of the regular price is bigger than or same with the " +
+                    "campaign price");
         }
     }
 
