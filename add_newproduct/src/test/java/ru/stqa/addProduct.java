@@ -41,7 +41,7 @@ public class addProduct {
         driver.findElements(By.cssSelector("td#content a.button")).get(1).click();
         Thread.sleep(1000);
 
-        String newItem = "Pirate Duck";
+        String newItem = "Duck in pirate costume";
         String relativePath = "./src/test/java/resources/Pirate Duck.png";
         Path filePath = Paths.get(relativePath);
         String absolutePath = filePath.normalize().toAbsolutePath().toString();
