@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 public class addProduct {
 
@@ -41,7 +42,7 @@ public class addProduct {
         driver.findElements(By.cssSelector("td#content a.button")).get(1).click();
         Thread.sleep(1000);
 
-        String newItem = "Duck in pirate costume";
+        String newItem = "Pirate Duck" + new Random().nextInt(10);
         String relativePath = "./src/test/java/resources/Pirate Duck.png";
         Path filePath = Paths.get(relativePath);
         String absolutePath = filePath.normalize().toAbsolutePath().toString();
