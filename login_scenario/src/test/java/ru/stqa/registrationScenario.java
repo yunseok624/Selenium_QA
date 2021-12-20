@@ -8,12 +8,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
-import java.util.UUID;
 
 public class registrationScenario {
     private WebDriver driver;
@@ -29,17 +28,8 @@ public class registrationScenario {
     public void registration() throws InterruptedException {
         driver.get("http://localhost/litecart/en/");
 
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-
-        String randomEmail = random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-        String email = randomEmail + "@gmail.com";
-        String password = String.valueOf(new Random().nextInt(1000));
+        String email = randomGenerator(7) + "@gmail.com";
+        String password = String.valueOf(new Random().nextInt(1000000));
 
         createAccount(email, password);
         Thread.sleep(1000);
@@ -56,28 +46,29 @@ public class registrationScenario {
 
     private void createAccount(String email, String password) {
         driver.findElement(By.cssSelector("form[name='login_form'] table tr:last-child")).click();
-        String name = UUID.randomUUID().toString();
-        driver.findElement(By.name("firstname")).sendKeys(name);
-        String surname = UUID.randomUUID().toString();
-        driver.findElement(By.name("lastname")).sendKeys(surname);
-        driver.findElement(By.name("address1")).sendKeys(new Random().nextInt(1000) +
-                UUID.randomUUID().toString() + "st.");
+        driver.findElement(By.name("firstname")).sendKeys(randomGenerator(7));
+        driver.findElement(By.name("lastname")).sendKeys(randomGenerator(14));
+        driver.findElement(By.name("address1")).sendKeys(new Random().nextInt(1000) + " " +
+                randomGenerator(10) + " st.");
         driver.findElement(By.name("postcode")).sendKeys("0" + new Random().
                 nextInt(10000));
-        driver.findElement(By.name("city")).sendKeys("Boston");
+        String city = randomGenerator(6);
+        driver.findElement(By.name("city")).sendKeys(city);
         //Country
         Select country = new Select(driver.findElement(By.cssSelector("select[name='country_code']")));
         JavascriptExecutor js1 = (JavascriptExecutor) driver;
         js1.executeScript("arguments[0].selectedIndex = 224; arguments[0].dispatchEvent(new Event('change'))",
                 country);
         //State
+        Random rand = new Random();
+        String list = String.valueOf(rand.nextInt(64));
         Select zone = new Select(driver.findElement(By.cssSelector("select[name=zone_code]")));
         JavascriptExecutor js2 = (JavascriptExecutor) driver;
-        js2.executeScript("arguments[0].selectedIndex = 31; arguments[0].dispatchEvent(new Event('change'))",
-                zone);
-        //*****
+        js2.executeScript("arguments[0].selectedIndex =" + list + "; arguments[0].dispatchEvent(new " +
+                "Event('change'))", zone);
+        //Registration information
         driver.findElement(By.name("email")).sendKeys(email);
-        driver.findElement(By.name("phone")).sendKeys("+18452245869");
+        driver.findElement(By.name("phone")).sendKeys("+" + new Random().nextLong(100000000000L));
         driver.findElement(By.name("password")).sendKeys(password);
         driver.findElement(By.name("confirmed_password")).sendKeys(password);
         driver.findElement(By.name("create_account")).click();
@@ -91,6 +82,16 @@ public class registrationScenario {
 
     private void logout() {
         driver.findElement(By.cssSelector("div#box-account div.content li:last-child a")).click();
+    }
+
+    static final String SOURCE = "abcdefghijklmnopqrstuvwxyz";
+    static SecureRandom secureRnd = new SecureRandom();
+
+    private String randomGenerator(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++)
+            sb.append(SOURCE.charAt(secureRnd.nextInt(SOURCE.length())));
+        return sb.toString();
     }
 
     @After
