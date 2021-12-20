@@ -5,8 +5,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
 import java.time.Duration;
@@ -17,6 +19,7 @@ public class registrationScenario {
     @Before
     public void start() {
         driver = new ChromeDriver();
+        //driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
@@ -48,11 +51,15 @@ public class registrationScenario {
         driver.findElement(By.name("postcode")).sendKeys("02128");
         driver.findElement(By.name("city")).sendKeys("Boston");
         //Country
-        Select country = new Select(driver.findElement(By.name("country_code")));
-        country.selectByVisibleText("United States");
+        Select country = new Select(driver.findElement(By.cssSelector("select[name='country_code']")));
+        JavascriptExecutor js1 = (JavascriptExecutor) driver;
+        js1.executeScript("arguments[0].selectedIndex = 224; arguments[0].dispatchEvent(new Event('change'))",
+                country);
         //State
-        Select zone = new Select(driver.findElement(By.cssSelector("select[name='zone_code']")));
-        zone.selectByVisibleText("Massachusetts");
+        Select zone = new Select(driver.findElement(By.cssSelector("select[name=zone_code]")));
+        JavascriptExecutor js2 = (JavascriptExecutor) driver;
+        js2.executeScript("arguments[0].selectedIndex = 31; arguments[0].dispatchEvent(new Event('change'))",
+                zone);
         //*****
         driver.findElement(By.name("email")).sendKeys(email);
         driver.findElement(By.name("phone")).sendKeys("+18452245869");
