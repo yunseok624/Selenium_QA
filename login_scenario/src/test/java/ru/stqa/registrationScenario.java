@@ -12,6 +12,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
 import java.time.Duration;
+import java.util.Random;
+import java.util.UUID;
 
 public class registrationScenario {
     private WebDriver driver;
@@ -27,8 +29,17 @@ public class registrationScenario {
     public void registration() throws InterruptedException {
         driver.get("http://localhost/litecart/en/");
 
-        String email = "malaka@gmail.com";
-        String password = "13579";
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        String randomEmail = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        String email = randomEmail + "@gmail.com";
+        String password = String.valueOf(new Random().nextInt(1000));
 
         createAccount(email, password);
         Thread.sleep(1000);
@@ -45,10 +56,14 @@ public class registrationScenario {
 
     private void createAccount(String email, String password) {
         driver.findElement(By.cssSelector("form[name='login_form'] table tr:last-child")).click();
-        driver.findElement(By.name("firstname")).sendKeys("Paninis");
-        driver.findElement(By.name("lastname")).sendKeys("Daniels");
-        driver.findElement(By.name("address1")).sendKeys("160 Webster st.");
-        driver.findElement(By.name("postcode")).sendKeys("02128");
+        String name = UUID.randomUUID().toString();
+        driver.findElement(By.name("firstname")).sendKeys(name);
+        String surname = UUID.randomUUID().toString();
+        driver.findElement(By.name("lastname")).sendKeys(surname);
+        driver.findElement(By.name("address1")).sendKeys(new Random().nextInt(1000) +
+                UUID.randomUUID().toString() + "st.");
+        driver.findElement(By.name("postcode")).sendKeys("0" + new Random().
+                nextInt(10000));
         driver.findElement(By.name("city")).sendKeys("Boston");
         //Country
         Select country = new Select(driver.findElement(By.cssSelector("select[name='country_code']")));
