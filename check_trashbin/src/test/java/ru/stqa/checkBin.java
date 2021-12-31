@@ -60,19 +60,15 @@ public class checkBin {
     }
 
     private void clearCart(){
-        int count = driver.findElements(By.cssSelector("li.shortcut")).size();
-        for (int i = 0; i < count; i++) {
-            driver.findElement(By.cssSelector("li.shortcut")).click();
-            driver.findElement(By.name("remove_cart_item")).click();
+        WebElement findElement;
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[name='remove_cart_item']")));
+        while(driver.findElements(By.cssSelector("[name='remove_cart_item']")).size() != 0){
+            findElement = driver.findElement(By.cssSelector("[name='remove_cart_item']"));
+            findElement.click();
             implicitlyWaitOff();
-            wait.until(ExpectedConditions.numberOfElementsToBeLessThan(By.cssSelector
-                    ("div#box-checkout-summary td.item"), i));
+            wait.until(ExpectedConditions.stalenessOf(findElement));
             implicitlyWaitOn();
         }
-        driver.findElement(By.name("remove_cart_item")).click();
-        implicitlyWaitOff();
-        wait.until(ExpectedConditions.stalenessOf(driver.findElement(By.id("box-checkout-summary"))));
-        implicitlyWaitOn();
     }
 
     private void implicitlyWaitOn() {
